@@ -69,8 +69,8 @@ void choice()
 
 void marker_usage(int decision)
 {
-    int row = decision / 3;
-    int col = (decision - 3*row);
+    int row = decision / 3 - 1;
+    int col = (decision - 3*row) - 1;
 
     tab[row][col] = marker;
 }
