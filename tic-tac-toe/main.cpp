@@ -2,21 +2,26 @@
 #include <conio.h>
 #include <cstdlib>
 
+// using directives
 using std::cout;
 using std::cin;
 
+// function declarations
 void welcome();
 void enter();
 void clear_screen();
-void board();
-void choice();
+void print_board();
+void choice();                      // calls marker_usage() and set_marker()
 void marker_usage(int decision);
 void set_marker();
-void gameover();
+void gameover();                    // calls isDraw(), choice(), print_board(), player()
 bool isDraw();
-void player();
+char player();
+void player_announcement();         // calls player()
 
-char gameBoard[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+// global variables
+const int BOARD_SIZE = 3;
+char gameBoard[BOARD_SIZE][BOARD_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 char marker = 'X';
 
 
@@ -28,7 +33,7 @@ int main()
     enter();
     clear_screen();
 
-    board();
+    print_board();
 
     gameover();
 
@@ -47,7 +52,8 @@ void welcome()
 void enter()
 {
     char key = getch();
-    while (key != 13)
+    const int enter_button = 13;
+    while (key != enter_button)
     {
         key = getch();
     }
@@ -62,7 +68,7 @@ void clear_screen()
     #endif
 }
 
-void board()
+void print_board()
 {
     cout << "\n";
     cout << "  " << gameBoard[0][0] << " | " << gameBoard[0][1] << " | " << gameBoard[0][2] << "\n";
@@ -74,7 +80,7 @@ void board()
 
 void choice()
 {
-    player();
+    player_announcement();
     cout << "Choose field [1-9] to fill: ";
 
     int decision;
@@ -116,25 +122,25 @@ void gameover()
            (gameBoard[0][0] == marker && gameBoard[1][1] == marker && gameBoard[2][2] == marker) ||
            (gameBoard[2][0] == marker && gameBoard[1][1] == marker && gameBoard[0][2] == marker))
         {
-            cout << "Player " << marker << " has won! Congratulations!";
+            cout << "Player" << player() << " has won! Congratulations!";
             over = true;
         }
         else if (isDraw())
         {
-            cout << "The match ends in a draw!";
+            cout << "The match ends in a draw!\n";
             over = true;
         }
         else
         {
             choice();
-            board();
+            print_board();
         }
     }
 }
 
 bool isDraw()
 {
-    bool checker = true;
+    bool isFilled = true;
     for (int i = 0; i < 3; ++i)
     {
         for (int j = 0; j < 3; ++j)
@@ -142,19 +148,24 @@ bool isDraw()
             if (gameBoard[i][j] == 'X' || gameBoard[i][j] == 'O') {}
             else
             {
-                checker = false;
-                return checker;
+                isFilled = false;
+                return isFilled;
             }
         }
     }
 
-    return checker;
+    return isFilled;
 }
 
-void player()
+char player()
 {
     if (marker == 'X')
-        cout << "\nPlayer1's turn\n";
+        return '1';
     else if (marker == 'O')
-        cout << "\nPlayer2's turn\n";
+        return '2';
+}
+
+void player_announcement()
+{
+    cout << "\nPlayer" << player() << "'s turn\n";
 }
