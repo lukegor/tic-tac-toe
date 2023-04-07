@@ -5,6 +5,16 @@
 // using directives
 using std::cout;
 using std::cin;
+using std::cerr;
+
+// enums
+
+enum MarkerError
+{
+    NO_ERROR,
+    FIELD_ALREADY_MARKED,
+    INVALID_DECISION
+};
 
 // function declarations
 void welcome();
@@ -12,7 +22,7 @@ void enter();
 void clear_screen();
 void print_board();
 void choice();                      // calls marker_usage() and set_marker()
-void marker_usage(int decision);
+MarkerError marker_usage(int decision);    // uses enum
 void set_marker();
 void gameover();                    // calls isDraw(), choice(), print_board(), player()
 bool isDraw();
@@ -23,6 +33,8 @@ void player_announcement();         // calls player()
 const int BOARD_SIZE = 3;
 char gameBoard[BOARD_SIZE][BOARD_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 char marker = 'X';
+int row;
+int col;
 
 
 
@@ -93,10 +105,30 @@ void choice()
 
 void marker_usage(int decision)
 {
-    int row = decision / 3 - 1;
-    int col = (decision - 3*row) - 1;
+    if(gameBoard[row][col] == 'X' or gameBoard[row][col] == 'O')
+    {
+        cerr << "\n\n******************";
+        cerr << "Disallowed action. ";
+        cerr << "******************\n\n";
 
-    gameBoard[row][col] = marker;
+        //return FIELD_ALREADY_MARKED;
+    }
+    else if (decision < 1 || decision > 9)
+    {
+        cerr << "\n\n******************";
+        cerr << "Disallowed action.";
+        cerr << "******************\n\n";
+        //return INVALID_DECISION;
+    }
+    else
+    {
+        row = decision / 3 - 1;
+        col = (decision - 3*row) - 1;
+
+        gameBoard[row][col] = marker;
+
+        //return NO_ERROR;
+    }
 }
 
 void set_marker()
@@ -167,5 +199,5 @@ char player()
 
 void player_announcement()
 {
-    cout << "\nPlayer" << player() << "'s turn\n";
+    cout << "\nPlayer" << player() << "'s turn!\n";
 }
