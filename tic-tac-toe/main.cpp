@@ -7,21 +7,26 @@ using std::cin;
 
 void welcome();
 void enter();
+void clear_screen();
 void board();
 void choice();
 void marker_usage(int decision);
 void set_marker();
 void gameover();
 bool isDraw();
+void player();
 
-char tab[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+char gameBoard[3][3] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 char marker = 'X';
+
+
+
 
 int main()
 {
     welcome();
     enter();
-    system("CLS");
+    clear_screen();
 
     board();
 
@@ -29,6 +34,9 @@ int main()
 
     return 0;
 }
+
+
+
 
 void welcome()
 {
@@ -45,19 +53,29 @@ void enter()
     }
 }
 
+void clear_screen()
+{
+    #if defined(_WIN32) || defined(_WIN64)
+    system("cls");
+    #else
+    system("clear");
+    #endif
+}
+
 void board()
 {
     cout << "\n";
-    cout << "  " << tab[0][0] << " | " << tab[0][1] << " | " << tab[0][2] << "\n";
+    cout << "  " << gameBoard[0][0] << " | " << gameBoard[0][1] << " | " << gameBoard[0][2] << "\n";
     cout << " ___|___|___\n";
-    cout << "  " << tab[1][0] << " | " << tab[1][1] << " | " << tab[1][2] << "\n";
+    cout << "  " << gameBoard[1][0] << " | " << gameBoard[1][1] << " | " << gameBoard[1][2] << "\n";
     cout << " ___|___|___\n";
-    cout << "  " << tab[2][0] << " | " << tab[2][1] << " | " << tab[2][2] << "\n";
+    cout << "  " << gameBoard[2][0] << " | " << gameBoard[2][1] << " | " << gameBoard[2][2] << "\n\n";
 }
 
 void choice()
 {
-    cout << "\n\nChoose field [1-9] to fill: ";
+    player();
+    cout << "Choose field [1-9] to fill: ";
 
     int decision;
     cin >> decision;
@@ -72,7 +90,7 @@ void marker_usage(int decision)
     int row = decision / 3 - 1;
     int col = (decision - 3*row) - 1;
 
-    tab[row][col] = marker;
+    gameBoard[row][col] = marker;
 }
 
 void set_marker()
@@ -89,16 +107,16 @@ void gameover()
 
     while (over == false)
     {
-        if((tab[0][0] == marker && tab[0][1] == marker && tab[0][2] == marker) ||
-           (tab[1][0] == marker && tab[1][1] == marker && tab[1][2] == marker) ||
-           (tab[2][0] == marker && tab[2][1] == marker && tab[2][2] == marker) ||
-           (tab[0][0] == marker && tab[1][0] == marker && tab[2][0] == marker) ||
-           (tab[0][1] == marker && tab[1][1] == marker && tab[2][1] == marker) ||
-           (tab[0][2] == marker && tab[1][2] == marker && tab[2][2] == marker) ||
-           (tab[0][0] == marker && tab[1][1] == marker && tab[2][2] == marker) ||
-           (tab[2][0] == marker && tab[1][1] == marker && tab[0][2] == marker))
+        if((gameBoard[0][0] == marker && gameBoard[0][1] == marker && gameBoard[0][2] == marker) ||
+           (gameBoard[1][0] == marker && gameBoard[1][1] == marker && gameBoard[1][2] == marker) ||
+           (gameBoard[2][0] == marker && gameBoard[2][1] == marker && gameBoard[2][2] == marker) ||
+           (gameBoard[0][0] == marker && gameBoard[1][0] == marker && gameBoard[2][0] == marker) ||
+           (gameBoard[0][1] == marker && gameBoard[1][1] == marker && gameBoard[2][1] == marker) ||
+           (gameBoard[0][2] == marker && gameBoard[1][2] == marker && gameBoard[2][2] == marker) ||
+           (gameBoard[0][0] == marker && gameBoard[1][1] == marker && gameBoard[2][2] == marker) ||
+           (gameBoard[2][0] == marker && gameBoard[1][1] == marker && gameBoard[0][2] == marker))
         {
-            cout << "Player " << marker << " has won! Congratulaions!";
+            cout << "Player " << marker << " has won! Congratulations!";
             over = true;
         }
         else if (isDraw())
@@ -119,9 +137,9 @@ bool isDraw()
     bool checker = true;
     for (int i = 0; i < 3; ++i)
     {
-        for (int j = 0; j < 3; ++i)
+        for (int j = 0; j < 3; ++j)
         {
-            if (tab[i][j] == 'X' || tab[i][j] == 'O') {}
+            if (gameBoard[i][j] == 'X' || gameBoard[i][j] == 'O') {}
             else
             {
                 checker = false;
@@ -131,4 +149,12 @@ bool isDraw()
     }
 
     return checker;
+}
+
+void player()
+{
+    if (marker == 'X')
+        cout << "\nPlayer1's turn\n";
+    else if (marker == 'O')
+        cout << "\nPlayer2's turn\n";
 }
