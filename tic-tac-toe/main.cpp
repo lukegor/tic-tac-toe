@@ -24,7 +24,8 @@ void print_board();
 void choice();                      // calls marker_usage(), set_marker(), detect_error()
 void marker_usage(int decision);    // supposed to use enum
 void set_marker();
-bool detect_error(int decision);
+MarkerError detect_error(int decision);
+void error_msg(MarkerError isError);
 void determine_field(int decision);
 void gameover();                    // calls isDraw(), choice(), print_board(), player()
 bool isDraw();
@@ -32,8 +33,8 @@ char player();
 void player_announcement();         // calls player()
 
 // global variables
-const int BOARD_SIZE = 3;
-char gameBoard[BOARD_SIZE][BOARD_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+const int DIMENSION_SIZE = 3;
+char gameBoard[DIMENSION_SIZE][DIMENSION_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 char marker = 'X';
 int row;
 int col;
@@ -100,14 +101,15 @@ void choice()
     int decision;
     cin >> decision;
 
-    bool isError = detect_error(decision);
+    MarkerError isError = detect_error(decision);
 
-    if (isError == false)
+    if (isError == NO_ERROR)
     {
         marker_usage(decision);
         set_marker();
     }
-    //else
+    else
+        error_msg(isError);
 
 }
 
@@ -134,34 +136,39 @@ void set_marker()
         marker = 'X';
 }
 
-bool detect_error(int decision)
+MarkerError detect_error(int decision)
 {
-    bool isError = false;
+    MarkerError isError = NO_ERROR;
     determine_field(decision);
 
     if(gameBoard[row][col] == 'X' or gameBoard[row][col] == 'O')
     {
-        cerr << "\n\n******************";
-        cerr << "Disallowed action. ";
-        cerr << "******************\n\n";
-
-        //return FIELD_ALREADY_MARKED;
-
-        isError = true;
+        isError = FIELD_ALREADY_MARKED;
         return isError;
     }
     else if (decision < 1 || decision > 9)
     {
-        cerr << "\n\n******************";
-        cerr << "Disallowed action.";
-        cerr << "******************\n\n";
-        //return INVALID_DECISION;
-
-        isError = true;
+        isError = INVALID_DECISION;
         return isError;
     }
     else
         return isError;
+}
+
+void error_msg(MarkerError isError)
+{
+    if (isError == FIELD_ALREADY_MARKED)
+    {
+        cerr << "\n\n******************";
+        cerr << "Disallowed action. The Field is already marked.";
+        cerr << "******************\n\n";
+    }
+    else if (isError == INVALID_DECISION)
+    {
+        cerr << "\n\n******************";
+        cerr << "Disallowed action. Invalid decision.";
+        cerr << "******************\n\n";
+    }
 }
 
 void gameover()
