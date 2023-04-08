@@ -21,9 +21,11 @@ void welcome();
 void enter();
 void clear_screen();
 void print_board();
-void choice();                      // calls marker_usage() and set_marker()
-MarkerError marker_usage(int decision);    // uses enum
+void choice();                      // calls marker_usage(), set_marker(), detect_error()
+void marker_usage(int decision);    // supposed to use enum
 void set_marker();
+bool detect_error(int decision);
+void determine_field(int decision);
 void gameover();                    // calls isDraw(), choice(), print_board(), player()
 bool isDraw();
 char player();
@@ -98,37 +100,30 @@ void choice()
     int decision;
     cin >> decision;
 
-    marker_usage(decision);
+    bool isError = detect_error(decision);
 
-    set_marker();
+    if (isError == false)
+    {
+        marker_usage(decision);
+        set_marker();
+    }
+    //else
+
 }
 
 void marker_usage(int decision)
 {
-    if(gameBoard[row][col] == 'X' or gameBoard[row][col] == 'O')
-    {
-        cerr << "\n\n******************";
-        cerr << "Disallowed action. ";
-        cerr << "******************\n\n";
+    determine_field(decision);
 
-        //return FIELD_ALREADY_MARKED;
-    }
-    else if (decision < 1 || decision > 9)
-    {
-        cerr << "\n\n******************";
-        cerr << "Disallowed action.";
-        cerr << "******************\n\n";
-        //return INVALID_DECISION;
-    }
-    else
-    {
-        row = decision / 3 - 1;
-        col = (decision - 3*row) - 1;
+    gameBoard[row][col] = marker;
 
-        gameBoard[row][col] = marker;
+    //return NO_ERROR;
+}
 
-        //return NO_ERROR;
-    }
+void determine_field(int decision)
+{
+    row = decision / 3 - 1;
+    col = (decision - 3*row) - 1;
 }
 
 void set_marker()
@@ -137,6 +132,36 @@ void set_marker()
         marker = 'O';
     else if (marker == 'O')
         marker = 'X';
+}
+
+bool detect_error(int decision)
+{
+    bool isError = false;
+    determine_field(decision);
+
+    if(gameBoard[row][col] == 'X' or gameBoard[row][col] == 'O')
+    {
+        cerr << "\n\n******************";
+        cerr << "Disallowed action. ";
+        cerr << "******************\n\n";
+
+        //return FIELD_ALREADY_MARKED;
+
+        isError = true;
+        return isError;
+    }
+    else if (decision < 1 || decision > 9)
+    {
+        cerr << "\n\n******************";
+        cerr << "Disallowed action.";
+        cerr << "******************\n\n";
+        //return INVALID_DECISION;
+
+        isError = true;
+        return isError;
+    }
+    else
+        return isError;
 }
 
 void gameover()
