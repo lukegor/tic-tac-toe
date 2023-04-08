@@ -1,6 +1,7 @@
 #include <iostream>
 #include <conio.h>
 #include <cstdlib>
+#include <random>
 
 // using directives
 using std::cout;
@@ -31,6 +32,10 @@ void gameover();                    // calls isDraw(), choice(), print_board(), 
 bool isDraw();
 char player();
 void player_announcement();         // calls player()
+/*
+void play_again();
+void clear_values();
+*/
 
 // global variables
 const int DIMENSION_SIZE = 3;
@@ -44,6 +49,7 @@ int col;
 
 int main()
 {
+    int checkpoint;
     welcome();
     enter();
     clear_screen();
@@ -51,6 +57,7 @@ int main()
     print_board();
 
     gameover();
+    play_again();
 
     return 0;
 }
@@ -118,8 +125,6 @@ void marker_usage(int decision)
     determine_field(decision);
 
     gameBoard[row][col] = marker;
-
-    //return NO_ERROR;
 }
 
 void determine_field(int decision)
@@ -233,3 +238,30 @@ void player_announcement()
 {
     cout << "\nPlayer" << player() << "'s turn!\n";
 }
+
+/*
+void play_again()
+{
+    cout << "\n\n\nWould you like to play again? [y/n]: ";
+    char again;
+    cin >> again;
+
+    if (again == 'y')
+    {
+        clear_values();
+        clear_screen();
+    }
+    else if (again == 'n')
+    {
+        exit(true);
+    }
+}
+
+void clear_values()
+{
+    char gameBoard[DIMENSION_SIZE][DIMENSION_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+    char marker = 'X';
+    int row = -1;
+    int col = -1;
+}
+*/
