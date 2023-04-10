@@ -28,10 +28,14 @@ void set_marker();
 MarkerError detect_error(int decision);
 void error_msg(MarkerError isError);
 void determine_field(int decision);
-void gameover();                    // calls isDraw(), choice(), print_board(), player()
+void play_game();                    // calls isDraw(), choice(), print_board(), player()
+void isOver(bool &over);
+void keep_playing(bool over);
 bool isDraw();
-char player();
-void player_announcement();         // calls player()
+char whose_turn();
+void player_announcement();         // calls whose_turn()
+char who_won();
+
 /*
 void play_again();
 void clear_values();
@@ -41,8 +45,11 @@ void clear_values();
 const int DIMENSION_SIZE = 3;
 char gameBoard[DIMENSION_SIZE][DIMENSION_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
 char marker = 'X';
+const char marker1 = 'X';
+const char marker2 = 'O';
 int row;
 int col;
+int turn_counter = 0;
 
 
 
@@ -56,8 +63,8 @@ int main()
 
     print_board();
 
-    gameover();
-    play_again();
+    play_game();
+    //play_again();
 
     return 0;
 }
@@ -135,10 +142,10 @@ void determine_field(int decision)
 
 void set_marker()
 {
-    if (marker == 'X')
-        marker = 'O';
-    else if (marker == 'O')
-        marker = 'X';
+    if (marker == marker1)
+        marker = marker2;
+    else if (marker == marker2)
+        marker = marker1;
 }
 
 MarkerError detect_error(int decision)
@@ -146,7 +153,7 @@ MarkerError detect_error(int decision)
     MarkerError isError = NO_ERROR;
     determine_field(decision);
 
-    if(gameBoard[row][col] == 'X' or gameBoard[row][col] == 'O')
+    if(gameBoard[row][col] == marker1 || gameBoard[row][col] == marker2)
     {
         isError = FIELD_ALREADY_MARKED;
         return isError;
@@ -176,34 +183,54 @@ void error_msg(MarkerError isError)
     }
 }
 
-void gameover()
+void play_game()
 {
     bool over = false;
 
     while (over == false)
     {
-        if((gameBoard[0][0] == marker && gameBoard[0][1] == marker && gameBoard[0][2] == marker) ||
-           (gameBoard[1][0] == marker && gameBoard[1][1] == marker && gameBoard[1][2] == marker) ||
-           (gameBoard[2][0] == marker && gameBoard[2][1] == marker && gameBoard[2][2] == marker) ||
-           (gameBoard[0][0] == marker && gameBoard[1][0] == marker && gameBoard[2][0] == marker) ||
-           (gameBoard[0][1] == marker && gameBoard[1][1] == marker && gameBoard[2][1] == marker) ||
-           (gameBoard[0][2] == marker && gameBoard[1][2] == marker && gameBoard[2][2] == marker) ||
-           (gameBoard[0][0] == marker && gameBoard[1][1] == marker && gameBoard[2][2] == marker) ||
-           (gameBoard[2][0] == marker && gameBoard[1][1] == marker && gameBoard[0][2] == marker))
+        ++turn_counter;
+        keep_playing(over);
+
+        isOver(over);
+    }
+}
+
+void isOver(bool &over)
+{
+    if((gameBoard[0][0] == marker1 && gameBoard[0][1] == marker1 && gameBoard[0][2] == marker1) ||
+       (gameBoard[1][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[1][2] == marker1) ||
+       (gameBoard[2][0] == marker1 && gameBoard[2][1] == marker1 && gameBoard[2][2] == marker1) ||
+       (gameBoard[0][0] == marker1 && gameBoard[1][0] == marker1 && gameBoard[2][0] == marker1) ||
+       (gameBoard[0][1] == marker1 && gameBoard[1][1] == marker1 && gameBoard[2][1] == marker1) ||
+       (gameBoard[0][2] == marker1 && gameBoard[1][2] == marker1 && gameBoard[2][2] == marker1) ||
+       (gameBoard[0][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[2][2] == marker1) ||
+       (gameBoard[2][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[0][2] == marker1) ||
+       (gameBoard[0][0] == marker2 && gameBoard[0][1] == marker2 && gameBoard[0][2] == marker2) ||
+       (gameBoard[1][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[1][2] == marker2) ||
+       (gameBoard[2][0] == marker2 && gameBoard[2][1] == marker2 && gameBoard[2][2] == marker2) ||
+       (gameBoard[0][0] == marker2 && gameBoard[1][0] == marker2 && gameBoard[2][0] == marker2) ||
+       (gameBoard[0][1] == marker2 && gameBoard[1][1] == marker2 && gameBoard[2][1] == marker2) ||
+       (gameBoard[0][2] == marker2 && gameBoard[1][2] == marker2 && gameBoard[2][2] == marker2) ||
+       (gameBoard[0][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[2][2] == marker2) ||
+       (gameBoard[2][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[0][2] == marker2))
         {
-            cout << "Player" << player() << " has won! Congratulations!";
-            over = true;
-        }
-        else if (isDraw())
-        {
-            cout << "The match ends in a draw!\n";
-            over = true;
-        }
-        else
-        {
-            choice();
-            print_board();
-        }
+        cout << "Game Over! Player" << who_won() << " has won! Congratulations!";
+        over = true;
+    }
+    else if (isDraw())
+    {
+        cout << "The match ends in a draw!\n";
+        over = true;
+    }
+}
+
+void keep_playing(bool over)
+{
+    if(over == false)
+    {
+        choice();
+        print_board();
     }
 }
 
@@ -226,17 +253,26 @@ bool isDraw()
     return isFilled;
 }
 
-char player()
+char whose_turn()
 {
-    if (marker == 'X')
+    if (marker == marker1)
         return '1';
-    else if (marker == 'O')
+    else if (marker == marker2)
         return '2';
 }
 
 void player_announcement()
 {
-    cout << "\nPlayer" << player() << "'s turn!\n";
+    cout << "\nPlayer" << whose_turn() << "'s turn!\n";
+}
+
+
+char who_won()
+{
+    if (turn_counter % 2 == 1)
+        return '1';
+    else if (turn_counter % 2 == 0)
+        return '0';
 }
 
 /*
