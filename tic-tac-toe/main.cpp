@@ -35,11 +35,9 @@ bool isDraw();
 char whose_turn();
 void player_announcement();         // calls whose_turn()
 char who_won();
-
-/*
-void play_again();
+bool play_again();
 void clear_values();
-*/
+
 
 // global variables
 const int DIMENSION_SIZE = 3;
@@ -63,8 +61,10 @@ int main()
 
     print_board();
 
-    play_game();
-    //play_again();
+    do
+    {
+        play_game();
+    } while(play_again());
 
     return 0;
 }
@@ -272,11 +272,11 @@ char who_won()
     if (turn_counter % 2 == 1)
         return '1';
     else if (turn_counter % 2 == 0)
-        return '0';
+        return '2';
 }
 
-/*
-void play_again()
+
+bool play_again()
 {
     cout << "\n\n\nWould you like to play again? [y/n]: ";
     char again;
@@ -286,18 +286,23 @@ void play_again()
     {
         clear_values();
         clear_screen();
+        return true;
     }
-    else if (again == 'n')
-    {
-        exit(true);
-    }
+    return false;
 }
 
 void clear_values()
 {
-    char gameBoard[DIMENSION_SIZE][DIMENSION_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
-    char marker = 'X';
-    int row = -1;
-    int col = -1;
+    for (int i = 0; i < DIMENSION_SIZE; ++i)
+    {
+        for (int j = 0; j < DIMENSION_SIZE; ++j)
+        {
+            gameBoard[i][j] = '0' + (i * DIMENSION_SIZE + j + 1);
+        }
+    }
+    print_board();
+    marker = 'X';
+    row = -1;
+    col = -1;
 }
-*/
+
