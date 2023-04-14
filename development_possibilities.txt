@@ -1,9 +1,0 @@
-add AI player
-add replays
-add play_again()
-use QT/wxWidgets/smth like that to make a graphical user interface (GUI)
-add game history (potentially using database)
-add timer
-add multiplayer mode
-add music
-modularize code (separate into user-interface and game logic)

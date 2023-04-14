@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <cstdlib>
 #include <random>
+#include <chrono>
 
 // using directives
 using std::cout;
@@ -26,6 +27,7 @@ void choice();                      // calls marker_usage(), set_marker(), detec
 void marker_usage(int decision);    // supposed to use enum
 void set_marker();
 MarkerError detect_error(int decision);
+MarkerError detect_error2();
 void error_msg(MarkerError isError);
 void determine_field(int decision);
 void play_game();                    // calls isDraw(), choice(), print_board(), player()
@@ -38,6 +40,12 @@ char who_won();
 bool play_again();
 void clear_values();
 
+int getRandomInt();
+void chooseGameMode();
+void AIMove();                      // not only does it make an AI move, but also call isValidAIMove() within itself unlike what is done for Human Mode
+bool isValidAIMove();
+
+
 
 // global variables
 const int DIMENSION_SIZE = 3;
@@ -48,13 +56,16 @@ const char marker2 = 'O';
 int row;
 int col;
 int turn_counter = 0;
+bool isAIMode = false;
 
+
+// random numbers generator with seed
+std::mt19937 engine(std::chrono::system_clock::now().time_since_epoch().count());
 
 
 
 int main()
 {
-    int checkpoint;
     welcome();
     enter();
     clear_screen();
@@ -63,6 +74,7 @@ int main()
 
     do
     {
+        chooseGameMode();
         play_game();
     } while(play_again());
 
@@ -113,18 +125,40 @@ void choice()
     cout << "Choose field [1-9] to fill: ";
 
     int decision;
-    cin >> decision;
 
-    MarkerError isError = detect_error(decision);
+    if(isAIMode == false || isAIMode == true && turn_counter % 2 == 1)
+    {
+        cin >> decision;
+    }
+    else if (isAIMode == true && turn_counter % 2 == 0)
+    {
 
-    if (isError == NO_ERROR)
+        AIMove();
+
+        decision = (row * DIMENSION_SIZE + col + 1);
+        cout << decision;
+    }
+
+    MarkerError isError;
+
+    if(isAIMode == false)
+    {
+        isError = detect_error(decision);
+
+
+        if (isError == NO_ERROR)
+        {
+            marker_usage(decision);
+            set_marker();
+        }
+        else
+            error_msg(isError);
+    }
+    else if(isAIMode == true)
     {
         marker_usage(decision);
         set_marker();
     }
-    else
-        error_msg(isError);
-
 }
 
 void marker_usage(int decision)
@@ -167,18 +201,39 @@ MarkerError detect_error(int decision)
         return isError;
 }
 
+MarkerError detect_error2()
+{
+    MarkerError isError = NO_ERROR;
+    int decision = (row * DIMENSION_SIZE + col + 1);
+
+    if(gameBoard[row][col] == marker1 || gameBoard[row][col] == marker2)
+    {
+        isError = FIELD_ALREADY_MARKED;
+        cout << "coœ nie tak";
+        return isError;
+    }
+    else if (decision < 1 || decision > 9)
+    {
+        isError = INVALID_DECISION;
+        cout << "coœ fchuj nie tak";
+        return isError;
+    }
+    else
+        return isError;
+}
+
 void error_msg(MarkerError isError)
 {
     if (isError == FIELD_ALREADY_MARKED)
     {
         cerr << "\n\n******************";
-        cerr << "Disallowed action. The Field is already marked.";
+        cerr << "Prohibited action. The Field is already marked.";
         cerr << "******************\n\n";
     }
     else if (isError == INVALID_DECISION)
     {
         cerr << "\n\n******************";
-        cerr << "Disallowed action. Invalid decision.";
+        cerr << "Prohibited action. Invalid decision.";
         cerr << "******************\n\n";
     }
 }
@@ -306,3 +361,66 @@ void clear_values()
     col = -1;
 }
 
+int getRandomInt()          // using Mersenne Twister engine from <random>
+{
+    std::uniform_int_distribution<> dist(0, 2);
+
+    int random_num = dist(engine);
+    return random_num;
+}
+
+void chooseGameMode()
+{
+    cout << "Choose game mode\n\n";
+    cout << "\n\n\t1. Human vs Human";
+    cout << "\n\t2. Human vs AI\n";
+    cout << "\n\n\tYour choice is [1/2]: ";
+
+    char mode;
+    cin >> mode;
+
+    if (mode == '2')
+    {
+        isAIMode = true;
+    }
+    else if (mode == '1')
+    {
+        isAIMode = false;
+    }
+}
+
+bool isValidAIMove()
+{
+    MarkerError result = detect_error2();
+    if (result == FIELD_ALREADY_MARKED || result == INVALID_DECISION)
+    {
+        return false;
+    }
+    else if (result == NO_ERROR)
+    {
+        return true;
+    }
+}
+
+bool chooseAndAssessAIMove()
+{
+    row = getRandomInt();
+    col = getRandomInt();
+    bool test = isValidAIMove();
+    return test;
+}
+
+void AIMove()
+{
+    if (marker == marker2)
+    {
+        bool test = chooseAndAssessAIMove();
+
+        if (test == false) {chooseAndAssessAIMove();}
+        else
+        {
+            gameBoard[row][col] = marker2;
+        }
+    }
+    else {}
+}
