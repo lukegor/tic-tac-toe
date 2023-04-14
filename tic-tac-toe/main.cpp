@@ -24,6 +24,7 @@ void enter();
 void clear_screen();
 void print_board();
 void choice();                      // calls marker_usage(), set_marker(), detect_error()
+void makeChoice(int &decision);
 void marker_usage(int decision);    // supposed to use enum
 void set_marker();
 MarkerError detect_error(int decision);
@@ -57,6 +58,7 @@ int row;
 int col;
 int turn_counter = 0;
 bool isAIMode = false;
+bool unsuccessfulChoice = false;
 
 
 // random numbers generator with seed
@@ -126,18 +128,7 @@ void choice()
 
     int decision;
 
-    if(isAIMode == false || isAIMode == true && turn_counter % 2 == 1)
-    {
-        cin >> decision;
-    }
-    else if (isAIMode == true && turn_counter % 2 == 0)
-    {
-
-        AIMove();
-
-        decision = (row * DIMENSION_SIZE + col + 1);
-        cout << decision;
-    }
+    makeChoice(decision);
 
     MarkerError isError;
 
@@ -152,12 +143,48 @@ void choice()
             set_marker();
         }
         else
+        {
+            unsuccessfulChoice = true;
             error_msg(isError);
+        }
     }
-    else if(isAIMode == true)
+    else if(isAIMode == true && turn_counter % 2 == 1)  // player move in AIMode
+    {
+        cout << "\n\n\n" << turn_counter << "\n\n\n";
+        isError = detect_error(decision);
+
+
+        if (isError == NO_ERROR)
+        {
+            marker_usage(decision);
+            set_marker();
+        }
+        else
+        {
+            unsuccessfulChoice = true;
+            error_msg(isError);
+        }
+    }
+    else if(isAIMode == true && turn_counter % 2 == 0)  // AIMove in AIMode
     {
         marker_usage(decision);
         set_marker();
+    }
+}
+
+void makeChoice(int &decision)
+{
+    if(isAIMode == false || isAIMode == true && turn_counter % 2 == 1)
+    {
+        cin >> decision;
+    }
+    else if (isAIMode == true && turn_counter % 2 == 0)
+    {
+
+        AIMove();
+
+        decision = (row * DIMENSION_SIZE + col + 1);
+        cout << decision;
     }
 }
 
@@ -215,7 +242,6 @@ MarkerError detect_error2()
     else if (decision < 1 || decision > 9)
     {
         isError = INVALID_DECISION;
-        cout << "coœ fchuj nie tak";
         return isError;
     }
     else
@@ -244,7 +270,15 @@ void play_game()
 
     while (over == false)
     {
-        ++turn_counter;
+        if (unsuccessfulChoice == false)
+        {
+            ++turn_counter;
+        }
+        else
+        {
+            unsuccessfulChoice = false;
+        }
+
         keep_playing(over);
 
         isOver(over);
