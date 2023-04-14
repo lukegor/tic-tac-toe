@@ -450,7 +450,7 @@ void AIMove()
     {
         bool test = chooseAndAssessAIMove();
 
-        if (test == false) {chooseAndAssessAIMove();}
+        if (test == false) {AIMove();}
         else
         {
             gameBoard[row][col] = marker2;
