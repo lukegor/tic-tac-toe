@@ -32,6 +32,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="database.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>
