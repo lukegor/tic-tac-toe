@@ -1,5 +1,10 @@
+// tic-tac-toe.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
 #include <iostream>
+#include <string>
 #include <conio.h>
+#include <cstdio>
 #include <cstdlib>
 #include <cctype>
 #include <random>
@@ -21,14 +26,14 @@ enum MarkerError
 
 // function declarations
 
-                                    // calls list is incomplete as of 15.04.2023
+                                    // calls comment list is incomplete as of 15.04.2023
 void welcome();
 void enter();
 void clear_screen();
 void chooseNickname();
 void print_board();
 void choice();                      // calls player_announcement(), makeChoice(), detect_error(), set_marker(),  marker_usage(), error_msg()
-void makeChoice(int &decision);
+void makeChoice(int& decision);
 void marker_usage(int decision);    // uses enum
 void set_marker();
 MarkerError detect_error(int decision);
@@ -36,7 +41,7 @@ MarkerError detect_error2();
 void error_msg(MarkerError isError);
 void determine_field(int decision);
 void play_game();                    // calls isDraw(), choice(), print_board(), player()
-void isOver(bool &over);
+void isOver(bool& over);
 void keep_playing(bool over);
 bool isDraw();
 string whose_turn();
@@ -54,7 +59,7 @@ void mode3AIMove();
 
 // global variables
 const int DIMENSION_SIZE = 3;
-char gameBoard[DIMENSION_SIZE][DIMENSION_SIZE] = {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+char gameBoard[DIMENSION_SIZE][DIMENSION_SIZE] = { {'1','2','3'},{'4','5','6'},{'7','8','9'} };
 char marker = 'X';
 const char marker1 = 'X';
 const char marker2 = 'O';
@@ -85,7 +90,7 @@ int main()
         chooseGameMode();
         chooseNickname();
         play_game();
-    } while(play_again());
+    } while (play_again());
 
     return 0;
 }
@@ -101,21 +106,21 @@ void welcome()
 
 void enter()
 {
-    char key = getch();
+    char key = _getch();
     const int enter_button = 13;
     while (key != enter_button)
     {
-        key = getch();
+        key = _getch();
     }
 }
 
 void clear_screen()
 {
-    #if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
     system("cls");
-    #else
+#else
     system("clear");
-    #endif
+#endif
 }
 
 void chooseNickname()
@@ -132,6 +137,7 @@ void chooseNickname()
 
     if (gameMode == '1')
     {
+        cout << "Choose your nickname or press ENTER to go with default [Player2]: ";
         cin >> player2;
     }
 }
@@ -158,7 +164,7 @@ void choice()
 
     MarkerError isError;
 
-    if(gameMode == '1')
+    if (gameMode == '1')
     {
         isError = detect_error(decision);
 
@@ -174,7 +180,7 @@ void choice()
             error_msg(isError);
         }
     }
-    else if((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 1)  // player move in AIMode
+    else if ((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 1)  // player move in AIMode
     {
         cout << "\n\n\n" << turn_counter << "\n\n\n";
         isError = detect_error(decision);
@@ -191,16 +197,16 @@ void choice()
             error_msg(isError);
         }
     }
-    else if((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 0)  // executeAIMove in AIMode
+    else if ((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 0)  // executeAIMove in AIMode
     {
         marker_usage(decision);
         set_marker();
     }
 }
 
-void makeChoice(int &decision)
+void makeChoice(int& decision)
 {
-    if(gameMode == '1' || ((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 1))
+    if (gameMode == '1' || ((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 1))
     {
         cin >> decision;
     }
@@ -224,7 +230,7 @@ void marker_usage(int decision)
 void determine_field(int decision)
 {
     row = decision / 3 - 1;
-    col = (decision - 3*row) - 1;
+    col = (decision - 3 * row) - 1;
 }
 
 void set_marker()
@@ -246,7 +252,7 @@ MarkerError detect_error(int decision)
         isError = INVALID_DECISION;
         return isError;
     }
-    else if(gameBoard[row][col] == marker1 || gameBoard[row][col] == marker2)
+    else if (gameBoard[row][col] == marker1 || gameBoard[row][col] == marker2)
     {
         isError = FIELD_ALREADY_MARKED;
         return isError;
@@ -265,7 +271,7 @@ MarkerError detect_error2()
         isError = INVALID_DECISION;
         return isError;
     }
-    else if(gameBoard[row][col] == marker1 || gameBoard[row][col] == marker2)
+    else if (gameBoard[row][col] == marker1 || gameBoard[row][col] == marker2)
     {
         isError = FIELD_ALREADY_MARKED;
         return isError;
@@ -312,24 +318,24 @@ void play_game()
 }
 
 
-void isOver(bool &over)
-{
-    if((gameBoard[0][0] == marker1 && gameBoard[0][1] == marker1 && gameBoard[0][2] == marker1) ||
-       (gameBoard[1][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[1][2] == marker1) ||
-       (gameBoard[2][0] == marker1 && gameBoard[2][1] == marker1 && gameBoard[2][2] == marker1) ||
-       (gameBoard[0][0] == marker1 && gameBoard[1][0] == marker1 && gameBoard[2][0] == marker1) ||
-       (gameBoard[0][1] == marker1 && gameBoard[1][1] == marker1 && gameBoard[2][1] == marker1) ||
-       (gameBoard[0][2] == marker1 && gameBoard[1][2] == marker1 && gameBoard[2][2] == marker1) ||
-       (gameBoard[0][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[2][2] == marker1) ||
-       (gameBoard[2][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[0][2] == marker1) ||
-       (gameBoard[0][0] == marker2 && gameBoard[0][1] == marker2 && gameBoard[0][2] == marker2) ||
-       (gameBoard[1][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[1][2] == marker2) ||
-       (gameBoard[2][0] == marker2 && gameBoard[2][1] == marker2 && gameBoard[2][2] == marker2) ||
-       (gameBoard[0][0] == marker2 && gameBoard[1][0] == marker2 && gameBoard[2][0] == marker2) ||
-       (gameBoard[0][1] == marker2 && gameBoard[1][1] == marker2 && gameBoard[2][1] == marker2) ||
-       (gameBoard[0][2] == marker2 && gameBoard[1][2] == marker2 && gameBoard[2][2] == marker2) ||
-       (gameBoard[0][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[2][2] == marker2) ||
-       (gameBoard[2][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[0][2] == marker2))
+void isOver(bool& over)
+{   // winning combinations
+    if ((gameBoard[0][0] == marker1 && gameBoard[0][1] == marker1 && gameBoard[0][2] == marker1) ||
+        (gameBoard[1][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[1][2] == marker1) ||
+        (gameBoard[2][0] == marker1 && gameBoard[2][1] == marker1 && gameBoard[2][2] == marker1) ||
+        (gameBoard[0][0] == marker1 && gameBoard[1][0] == marker1 && gameBoard[2][0] == marker1) ||
+        (gameBoard[0][1] == marker1 && gameBoard[1][1] == marker1 && gameBoard[2][1] == marker1) ||
+        (gameBoard[0][2] == marker1 && gameBoard[1][2] == marker1 && gameBoard[2][2] == marker1) ||
+        (gameBoard[0][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[2][2] == marker1) ||
+        (gameBoard[2][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[0][2] == marker1) ||
+        (gameBoard[0][0] == marker2 && gameBoard[0][1] == marker2 && gameBoard[0][2] == marker2) ||
+        (gameBoard[1][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[1][2] == marker2) ||
+        (gameBoard[2][0] == marker2 && gameBoard[2][1] == marker2 && gameBoard[2][2] == marker2) ||
+        (gameBoard[0][0] == marker2 && gameBoard[1][0] == marker2 && gameBoard[2][0] == marker2) ||
+        (gameBoard[0][1] == marker2 && gameBoard[1][1] == marker2 && gameBoard[2][1] == marker2) ||
+        (gameBoard[0][2] == marker2 && gameBoard[1][2] == marker2 && gameBoard[2][2] == marker2) ||
+        (gameBoard[0][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[2][2] == marker2) ||
+        (gameBoard[2][0] == marker2 && gameBoard[1][1] == marker2 && gameBoard[0][2] == marker2))
     {
         cout << "Game Over! Player " << who_won() << " has won! Congratulations!";
         over = true;
@@ -343,7 +349,7 @@ void isOver(bool &over)
 
 void keep_playing(bool over)
 {
-    if(over == false)
+    if (over == false)
     {
         choice();
         print_board();
@@ -423,6 +429,8 @@ void clear_values()
     turn_counter = 0;
     gameMode = '0';
     unsuccessfulChoice = false;
+    player1 = "Player1";
+    player2 = "Player2";
 }
 
 int getRandomInt()          // using Mersenne Twister engine from <random>
@@ -444,19 +452,20 @@ void chooseGameMode()
     cout << "\tYour choice is [1/2]: ";
 
     char mode;
-    cin >> mode;
+    mode = _getch();
+    cin.ignore();
 
     while (mode != '1' && mode != '2')
     {
         cerr << "\n\n";
         cerr << "Invalid mode chosen. Please choose again [1/2]: ";
         cin >> mode;
-        cin.ignore();       // fixes error that causes 2 error communicates to be displayed
+        mode = _getch();
+        cin.ignore();
     }
 
 
     gameMode = mode;
-    cin.ignore();
 }
 
 bool isValidAIMove()
@@ -496,7 +505,7 @@ void executeAIMove()
     {
         bool test = chooseAndAssessAIMove();
 
-        if (test == false) {executeAIMove();}
+        if (test == false) { executeAIMove(); }
         else
         {
             gameBoard[row][col] = marker2;
