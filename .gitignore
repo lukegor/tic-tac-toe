@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/visualstudio,c++
-# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,c++
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudio,c++,codeblocks
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,c++,codeblocks
 
 ### C++ ###
 # Prerequisites
@@ -34,6 +34,14 @@
 *.exe
 *.out
 *.app
+
+### CodeBlocks ###
+# specific to CodeBlocks IDE
+*.layout
+*.depend
+# generated directories
+bin/
+obj/
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -434,4 +442,4 @@ FodyWeavers.xsd
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++
+# End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++,codeblocks
