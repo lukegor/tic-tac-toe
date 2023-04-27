@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstdio>
+#include <conio.h>
 #include <string>
 #include <cstdlib>
 #include <cctype>
@@ -22,7 +22,7 @@ enum MarkerError
 
 // function declarations
 
-                                    // calls comment list is incomplete as of 15.04.2023
+                                    // calls list is incomplete as of 15.04.2023
 void welcome();
 void enter();
 void clear_screen();
@@ -62,7 +62,7 @@ const char marker2 = 'O';
 int row;
 int col;
 int turn_counter = 0;
-char gameMode = '1';
+int gameMode = 1;
 bool unsuccessfulChoice = false;
 string player1 = "Player1";
 string player2 = "Player2";
@@ -102,11 +102,11 @@ void welcome()
 
 void enter()
 {
-    char key = getchar();
+    char key = getch();
     const int enter_button = 13;
     while (key != enter_button)
     {
-        key = getchar();
+        key = getch();
     }
 }
 
@@ -131,13 +131,14 @@ void chooseNickname()
     if (name.empty() == false)
         player1 = name;
 
-    if (gameMode == '1')
+    if (gameMode == 1)
     {
         cout << "Choose your nickname or press ENTER to go with default [Player2]: ";
-        cin >> player2;
+        getline(cin, name);
+        if (name.empty() == false)
+            player2 = name;
     }
 }
-
 
 void print_board()
 {
@@ -160,7 +161,7 @@ void choice()
 
     MarkerError isError;
 
-    if(gameMode == '1')
+    if(gameMode == 1)
     {
         isError = detect_error(decision);
 
@@ -176,7 +177,7 @@ void choice()
             error_msg(isError);
         }
     }
-    else if((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 1)  // player move in AIMode
+    else if((gameMode == 2 || gameMode == 3) && turn_counter % 2 == 1)  // player move in AIMode
     {
         cout << "\n\n\n" << turn_counter << "\n\n\n";
         isError = detect_error(decision);
@@ -193,7 +194,7 @@ void choice()
             error_msg(isError);
         }
     }
-    else if((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 0)  // executeAIMove in AIMode
+    else if((gameMode == 2 || gameMode == 3) && turn_counter % 2 == 0)  // executeAIMove in AIMode
     {
         marker_usage(decision);
         set_marker();
@@ -202,11 +203,11 @@ void choice()
 
 void makeChoice(int &decision)
 {
-    if(gameMode == '1' || ((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 1))
+    if(gameMode == 1 || ((gameMode == 2 || gameMode == 3) && turn_counter % 2 == 1))
     {
         cin >> decision;
     }
-    else if ((gameMode == '2' || gameMode == '3') && turn_counter % 2 == 0)
+    else if ((gameMode == 2 || gameMode == 3) && turn_counter % 2 == 0)
     {
 
         executeAIMove();
@@ -315,7 +316,7 @@ void play_game()
 
 
 void isOver(bool &over)
-{   // winning combinations
+{
     if((gameBoard[0][0] == marker1 && gameBoard[0][1] == marker1 && gameBoard[0][2] == marker1) ||
        (gameBoard[1][0] == marker1 && gameBoard[1][1] == marker1 && gameBoard[1][2] == marker1) ||
        (gameBoard[2][0] == marker1 && gameBoard[2][1] == marker1 && gameBoard[2][2] == marker1) ||
@@ -423,7 +424,7 @@ void clear_values()
     row = -1;
     col = -1;
     turn_counter = 0;
-    gameMode = '0';
+    gameMode = 1;
     unsuccessfulChoice = false;
     player1 = "Player1";
     player2 = "Player2";
@@ -447,17 +448,16 @@ void chooseGameMode()
     cout << "\n\n\n";
     cout << "\tYour choice is [1/2]: ";
 
-    char mode;
-    mode = getchar();
+    int mode;
+    cin >> mode;
     cin.ignore();
 
-    while (mode != '1' && mode != '2')
+    while (mode != 1 && mode != 2)
     {
         cerr << "\n\n";
         cerr << "Invalid mode chosen. Please choose again [1/2]: ";
         cin >> mode;
-        mode = getchar();
-        cin.ignore();
+        cin.ignore();       // fixes error that causes 2 error communicates to be displayed
     }
 
 
@@ -479,13 +479,13 @@ bool isValidAIMove()
 
 bool chooseAndAssessAIMove()
 {
-    if (gameMode == '2')
+    if (gameMode == 2)
     {
         row = getRandomInt();
         col = getRandomInt();
     }
     /*
-    else if (gameMode == '3')
+    else if (gameMode == 3)
     {
         //mode3AIMove();
     }
