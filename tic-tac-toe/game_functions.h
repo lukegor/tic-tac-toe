@@ -4,7 +4,10 @@
 #include <string>
 #include "global_variables.h"
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::cerr;
+using std::string;
 
 // enums
 enum MarkerError

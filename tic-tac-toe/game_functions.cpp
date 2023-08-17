@@ -11,7 +11,7 @@
 #include "game_functions.h"
 #include "global_variables.h"
 
-using namespace std;
+using std::string;
 
 void welcome()
 {
@@ -21,11 +21,10 @@ void welcome()
 
 void enter()
 {
-    char key = _getch();
-    const int enter_button = 13;
-    while (key != enter_button)
+    char key = cin.get();
+    while (key != '\n')
     {
-        key = _getch();
+        key = cin.get();
     }
 }
 
@@ -428,3 +427,11 @@ void executeAIMove()
     }
     else {}
 }
+
+//void mode3AIMove()
+//{
+//    for (int i = 0; i < 2; ++i)
+//    {
+//        if (gameBoard[i][0] == marker2)
+//    }
+//}

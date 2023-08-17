@@ -10,6 +10,7 @@
 #include <chrono>
 
 #include "game_functions.h"
+#include "global_variables.h"
 
 // using directives
 using std::cout;
@@ -56,18 +57,6 @@ int main()
 
     return 0;
 }
-
-
-
-/*
-void mode3AIMove()
-{
-    for (int i = 0; i < 2; ++i)
-    {
-        if (gameBoard[i][0] == marker2)
-    }
-}
-*/
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

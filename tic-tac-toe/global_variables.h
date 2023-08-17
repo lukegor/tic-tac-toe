@@ -4,7 +4,7 @@
 
 #include <string>
 
-using namespace std;
+using std::string;
 
 // global variables
 extern const int DIMENSION_SIZE;
